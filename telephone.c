@@ -21,7 +21,8 @@ int main(int argc, char **argv)
     // Initialize MPI environment
     MPI_Init(&argc, &argv);
 
-    if(argc != 2) {
+    if (argc != 2)
+    {
         printf("Telephone requires a message: \n \
             Please pass in a nonempty string into the command line");
         MPI_Finalize();
@@ -42,13 +43,15 @@ int main(int argc, char **argv)
     srand((unsigned)(clock() + world_rank));
 
     // Start Telephone
-    if (world_rank==0) {
+    if (world_rank == 0)
+    {
         printf("Starting Telephone with %d MPI Ranks...\n", world_size);
         printf("MPI rank 0 starting message: %s \n", buf);
     }
 
     // If there is just one rank, bail out
-    if (world_size == 1) {
+    if (world_size == 1)
+    {
         printf("Only one process, refusing to talk to self.\n");
         MPI_Finalize();
         return 0;
@@ -56,26 +59,15 @@ int main(int argc, char **argv)
 
     // Send and Receive Loop
     int i;
-    for (i = 0; i < world_size; i++) {
-        if (world_rank == i) {
-
-            /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            ~~~~~~~~~~~~~~Complete: ~~~~~~~~~~~~~~~~
-
-            MPI_Send();
-
-            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-        } else if (world_rank == (i+1) % world_size) {
-
-            /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            ~~~~~~~~~~~~~~Complete: ~~~~~~~~~~~~~~~~
-
-            MPI_Recv();
-
-            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    for (i = 0; i < world_size; i++)
+    {
+        if (world_rank == i)
+        {
+            MPI_Send(buf, len + 1, MPI_CHAR, (i + 1) % world_size, 0, MPI_COMM_WORLD);
+        }
+        else if (world_rank == (i + 1) % world_size)
+        {
+            MPI_Recv(buf, len + 1, MPI_CHAR, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
             garble(buf);
             printf("MPI rank %d received message: %s\n", world_rank, buf);
